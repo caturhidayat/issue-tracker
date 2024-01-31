@@ -1,19 +1,33 @@
 import prisma from "@/prisma/prisma";
+import { Prisma } from "@prisma/client";
 
 export async function POST(req: Request) {
     const { title, description } = await req.json();
-    const issue = await prisma.issue.create({
-        data: {
-            title,
-            description,
-        },
-    });
-    return Response.json(issue);
+    try {
+        const issue = await prisma.issue.create({
+            data: {
+                title,
+                description,
+            },
+        });
+        return Response.json(issue);
+    } catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error.code === "P1001") {
+                return Response.json("Cannot connect to database", {
+                    status: 500,
+                });
+            }
+        }
+        return Response.json(error);
+    }
 }
 
 export async function GET() {
-    const issues = await prisma.issue.findMany();
-    return Response.json(issues);
+    try {
+        const issues = await prisma.issue.findMany();
+        return Response.json(issues);
+    } catch (error) {
+        return Response.json(error);
+    }
 }
-
-

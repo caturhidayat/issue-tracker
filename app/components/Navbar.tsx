@@ -8,7 +8,6 @@ import classnames from "classnames";
 
 const Navbar = () => {
     const pathname = usePathname();
-    console.log(pathname);
     const MenuItem = [
         {
             name: "Home",
