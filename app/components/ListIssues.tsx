@@ -1,10 +1,11 @@
 "use client";
-import { Flex, Table, Callout } from "@radix-ui/themes";
+import { Flex, Table, Callout, Badge, Dialog } from "@radix-ui/themes";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteIssue, getIssue } from "../actions/issue/action";
 import { IssueType } from "../types/issue";
-import { Info, XCircle } from "lucide-react";
+import { Edit, Info, XCircle } from "lucide-react";
 import toast from "react-hot-toast";
+import EditIssuePopout from "./EditIssuePopout";
 
 const ListIssues = () => {
     const queryClient = useQueryClient();
@@ -37,7 +38,7 @@ const ListIssues = () => {
         <Flex direction={"column"} gap={"2"}>
             {queryIssue.data?.length === 0 ? (
                 <Flex justify={"center"}>
-                    <Callout.Root color="red">
+                    <Callout.Root color='red'>
                         <Callout.Icon>
                             <Info />
                         </Callout.Icon>
@@ -58,6 +59,9 @@ const ListIssues = () => {
                                 Description
                             </Table.ColumnHeaderCell>
                             <Table.ColumnHeaderCell>
+                                Status
+                            </Table.ColumnHeaderCell>
+                            <Table.ColumnHeaderCell>
                                 Action
                             </Table.ColumnHeaderCell>
                         </Table.Row>
@@ -76,16 +80,31 @@ const ListIssues = () => {
                                             {issue.description}
                                         </Table.Cell>
                                         <Table.Cell>
-                                            <button
-                                                className='hover:outline-none'
-                                                onClick={() => {
-                                                    mutation.mutateAsync(
-                                                        issue.id || 0
-                                                    );
-                                                }}
+                                            <Badge
+                                                {...(issue.status === "OPEN"
+                                                    ? { color: "orange" }
+                                                    : issue.status === "DONE"
+                                                    ? { color: "green" }
+                                                    : { color: "red" })}
                                             >
-                                                <XCircle color='red' />
-                                            </button>
+                                                {issue.status}
+                                            </Badge>
+                                        </Table.Cell>
+                                        <Table.Cell>
+                                            <Flex gap={"4"}>
+                                                <button>
+                                                    <EditIssuePopout props={{ issue }} />
+                                                </button>
+                                                <button
+                                                    onClick={() => {
+                                                        mutation.mutateAsync(
+                                                            issue.id || 0
+                                                        );
+                                                    }}
+                                                >
+                                                    <XCircle color='red' />
+                                                </button>
+                                            </Flex>
                                         </Table.Cell>
                                     </Table.Row>
                                 );
