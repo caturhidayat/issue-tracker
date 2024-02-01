@@ -25,11 +25,11 @@ const Navbar = () => {
             </Text>
             <ul className='flex px-8'>
                 {MenuItem.map((item, i) => (
-                    <li key={i} className='px-4 font-semibold'>
+                    <li key={i} className='px-4'>
                         <Text
                             className={classnames({
-                                "text-zinc-900": pathname === item.path,
-                                "text-zinc-500": pathname !== item.path,
+                                "text-zinc-900 font-semibold": pathname === item.path,
+                                "text-zinc-400 font-medium": pathname !== item.path,
                                 "hover:text-zinc-800 transition-colors duration-200 ":
                                     true,
                             })}

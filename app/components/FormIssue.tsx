@@ -4,38 +4,45 @@ import { useFormik } from "formik";
 import { revalidatePath } from "next/cache";
 import toast, { Toaster } from "react-hot-toast";
 import * as Yup from "yup";
+import { createIssue } from "../actions/issue/action";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { IssueType } from "../types/issue";
+import { FilePlus } from "lucide-react";
 
 const FormIssue = () => {
+    const queryClient = useQueryClient();
+
+    const mutation = useMutation({
+        mutationKey: ["createIssues"],
+        mutationFn: createIssue,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["issues"] });
+        },
+    });
     const formik = useFormik({
         initialValues: {
             title: "",
             description: "",
         },
-        onSubmit: async (values) => {
-            const createIssue = await fetch("/api/issue", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(values),
-            });
-            if (createIssue.ok) {
-                toast.success("Issue Created", {
+        onSubmit: async (value) => {
+            try {
+                await mutation.mutateAsync(formik.values as IssueType);
+                toast.success("Issue created successfully", {
+                    duration: 4000,
                     position: "bottom-center",
-                    duration: 2000,
                     icon: "✅",
                 });
-                revalidatePath("/issue");
                 formik.resetForm();
-            }
-            if (!createIssue.ok) {
-                toast.error("Issue Not Created", {
+            } catch (error) {
+                toast.error("Error in creating issue", {
+                    duration: 4000,
                     position: "bottom-center",
-                    duration: 2000,
                     icon: "❌",
                 });
             }
+            revalidatePath("/issue");
         },
+
         validationSchema: () => {
             return Yup.object({
                 title: Yup.string().required("Required").min(3),
@@ -80,7 +87,13 @@ const FormIssue = () => {
                             {formik.errors.description}
                         </Text>
                     ) : null}
-                    <Button type='submit'>Create Issue</Button>
+                    <Button
+                        type='submit'
+                        // onBlur={formik.handleBlur}
+                        // {...(formik.isSubmitting ? { disabled: true } : {})}
+                    >
+                        <FilePlus /> Create Issue
+                    </Button>
                 </Flex>
             </form>
             <Box>

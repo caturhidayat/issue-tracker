@@ -10,7 +10,7 @@ const IssuePage = () => {
                 Create Issue Page
             </Text>
             <FormIssue />
-            <Suspense>
+            <Suspense fallback={<div>Loading...</div>}>
                 <ListIssues />
             </Suspense>
         </div>

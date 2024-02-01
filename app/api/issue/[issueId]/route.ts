@@ -18,7 +18,7 @@ export async function DELETE(
     req: Request,
     { params: { issueId } }: { params: { issueId: string } }
 ) {
-    const issue = await prisma.issue.delete({
+    await prisma.issue.delete({
         where: { id: issueId },
     });
     return new Response(JSON.stringify({ status: "OK" }), {
