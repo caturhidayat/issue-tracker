@@ -17,6 +17,13 @@ const FormIssue = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["issues"] });
         },
+        onError: (error) => {
+            toast.error("Error in creating issue", {
+                duration: 4000,
+                position: "bottom-center",
+                icon: "❌",
+            });
+        }
     });
     const formik = useFormik({
         initialValues: {
