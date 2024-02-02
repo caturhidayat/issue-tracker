@@ -28,7 +28,7 @@ export default function RootLayout({
                     <Theme
                         appearance='light'
                         accentColor='violet'
-                        scaling='95%'
+                        // scaling='95%'
                     >
                         <Navbar />
                         <Box mx={"8"}>

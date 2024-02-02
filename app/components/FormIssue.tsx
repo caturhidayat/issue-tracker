@@ -8,6 +8,7 @@ import { createIssue } from "../actions/issue/action";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { IssueType } from "../types/issue";
 import { FilePlus } from "lucide-react";
+import Link from "next/link";
 
 const FormIssue = () => {
     const queryClient = useQueryClient();
@@ -53,7 +54,7 @@ const FormIssue = () => {
     return (
         <Flex my={"2"} direction={"column"}>
             <form onSubmit={formik.handleSubmit}>
-                <Flex my={"2"} direction={"column"} gap={"2"}>
+                <Flex my={"2"} direction={"column"} gap={"4"}>
                     <label>
                         <Text as='div' size={"2"} weight={"bold"}>
                             Issue Title
@@ -87,9 +88,13 @@ const FormIssue = () => {
                             {formik.errors.description}
                         </Text>
                     ) : null}
-                    <Button variant="solid" type='submit'>
-                        <FilePlus /> Create Issue
-                    </Button>
+
+                    
+                        <Button className="bg-violet-700" type="submit">
+                            <FilePlus />
+                            Create Issue
+                        </Button>
+                    
                 </Flex>
             </form>
             <Box>
