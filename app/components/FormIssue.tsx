@@ -87,11 +87,7 @@ const FormIssue = () => {
                             {formik.errors.description}
                         </Text>
                     ) : null}
-                    <Button
-                        type='submit'
-                        // onBlur={formik.handleBlur}
-                        // {...(formik.isSubmitting ? { disabled: true } : {})}
-                    >
+                    <Button variant="solid" type='submit'>
                         <FilePlus /> Create Issue
                     </Button>
                 </Flex>
