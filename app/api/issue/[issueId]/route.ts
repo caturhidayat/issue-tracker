@@ -1,5 +1,18 @@
 import prisma from "@/prisma/prisma";
 
+export async function GET(
+    req: Request,
+    { params: { issueId } }: { params: { issueId: string } }
+) {
+    console.log({ issueId });
+    const issue = await prisma.issue.findUnique({
+        where: { id: issueId },
+    });
+    return new Response(JSON.stringify(issue), {
+        headers: { "content-type": "application/json" },
+    });
+}
+
 export async function PATCH(
     request: Request,
     { params: { issueId } }: { params: { issueId: string } }

@@ -25,7 +25,11 @@ export async function POST(req: Request) {
 
 export async function GET() {
     try {
-        const issues = await prisma.issue.findMany();
+        const issues = await prisma.issue.findMany({
+            orderBy: {
+                createdAt: "asc",
+            },
+        });
         return Response.json(issues);
     } catch (error) {
         return Response.json(error);

@@ -1,11 +1,12 @@
 "use client";
-import { Flex, Table, Callout, Badge, Dialog } from "@radix-ui/themes";
+import { Flex, Table, Callout, Badge, Dialog, Button } from "@radix-ui/themes";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteIssue, getIssue } from "../actions/issue/action";
+import { deleteIssue, getIssues } from "../actions/issue/action";
 import { IssueType } from "../types/issue";
-import { Edit, Info, XCircle } from "lucide-react";
+import { Info, XCircle } from "lucide-react";
 import toast from "react-hot-toast";
-import EditIssuePopout from "./EditIssuePopout";
+import EditIssuePopout from "./EditIssueForm";
+import EditIssueDialog from "./EditIssueDialog";
 
 const ListIssues = () => {
     const queryClient = useQueryClient();
@@ -31,7 +32,7 @@ const ListIssues = () => {
     });
     const queryIssue = useQuery({
         queryKey: ["issues"],
-        queryFn: getIssue,
+        queryFn: getIssues,
     });
 
     return (
@@ -82,19 +83,22 @@ const ListIssues = () => {
                                         <Table.Cell>
                                             <Badge
                                                 {...(issue.status === "OPEN"
-                                                    ? { color: "orange" }
+                                                    ? { color: "red" }
                                                     : issue.status === "DONE"
                                                     ? { color: "green" }
-                                                    : { color: "red" })}
+                                                    : { color: "orange" })}
                                             >
                                                 {issue.status}
                                             </Badge>
                                         </Table.Cell>
                                         <Table.Cell>
-                                            <Flex gap={"4"}>
-                                                <button>
-                                                    <EditIssuePopout props={{ issue }} />
-                                                </button>
+                                            <Flex align={"baseline"} gap={"4"}>
+                                                <EditIssueDialog issue={issue} />
+                                                {/* <Link
+                                                    href={`/issue/${issue.id}`}
+                                                >
+                                                    Edit
+                                                </Link> */}
                                                 <button
                                                     onClick={() => {
                                                         mutation.mutateAsync(
@@ -102,7 +106,11 @@ const ListIssues = () => {
                                                         );
                                                     }}
                                                 >
-                                                    <XCircle color='red' />
+                                                    <XCircle
+                                                        width={"16"}
+                                                        height={"16"}
+                                                        color='red'
+                                                    />
                                                 </button>
                                             </Flex>
                                         </Table.Cell>

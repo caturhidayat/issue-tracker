@@ -1,31 +1,39 @@
-"use client";
-import { TextField, Text, Flex, Button, Box } from "@radix-ui/themes";
-import { useFormik } from "formik";
-import toast, { Toaster } from "react-hot-toast";
-import * as Yup from "yup";
-import { createIssue } from "../actions/issue/action";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Box, Button, Text, Flex, TextField, Select } from "@radix-ui/themes";
+import { Edit } from "lucide-react";
 import { IssueType } from "../types/issue";
-import { FilePlus } from "lucide-react";
+import { useFormik } from "formik";
+import { useState } from "react";
+import { updateIssue } from "../actions/issue/action";
+import * as Yup from "yup";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import toast, { Toaster } from "react-hot-toast";
 
-const FormIssue = () => {
+const EditIssueForm = ({
+    props: { issue },
+}: {
+    props: { issue: IssueType };
+}) => {
     const queryClient = useQueryClient();
 
-    const mutation = useMutation({
-        mutationKey: ["createIssues"],
-        mutationFn: createIssue,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["issues"] });
-        },
-    });
+    // const mutation = useMutation({
+    //     mutationKey: ["createIssues"],
+    //     mutationFn: updateIssue,
+    //     onSuccess: () => {
+    //         queryClient.invalidateQueries({ queryKey: ["issues"] });
+    //     },
+    // });
     const formik = useFormik({
         initialValues: {
-            title: "",
-            description: "",
+            title: issue.title,
+            description: issue.description,
+            status: issue.status,
         },
-        onSubmit: async () => {
+        onSubmit: async (value) => {
             try {
-                await mutation.mutateAsync(formik.values as IssueType);
+                // await mutation.mutateAsync(
+                //     issue.id ?? 0,
+                //     formik.values as IssueType
+                // );
                 toast.success("Issue created successfully", {
                     duration: 4000,
                     position: "bottom-center",
@@ -39,13 +47,15 @@ const FormIssue = () => {
                     icon: "❌",
                 });
             }
-            queryClient.invalidateQueries({ queryKey: ["issues"] });
         },
 
         validationSchema: () => {
             return Yup.object({
                 title: Yup.string().required("Required").min(3),
                 description: Yup.string().required("Required").min(3),
+                status: Yup.string()
+                    .required("Required")
+                    .oneOf(["OPEN", "IN_PROGRESS", "DONE"]),
             });
         },
     });
@@ -86,13 +96,26 @@ const FormIssue = () => {
                             {formik.errors.description}
                         </Text>
                     ) : null}
+                    <label>
+                        <Text as='div' size={"2"} weight={"bold"}>
+                            Status
+                        </Text>
+                        <Select.Root defaultValue={issue.status}>
+                            <Select.Trigger />
+                            <Select.Content position='popper'>
+                                <Select.Item value='OPEN'>OPEN</Select.Item>
+                                <Select.Item value='IN_PROGRESS'>
+                                    IN_PROGRESS
+                                </Select.Item>
+                                <Select.Item value='DONE'>DONE</Select.Item>
+                            </Select.Content>
+                        </Select.Root>
+                    </label>
 
-                    
-                        <Button className="bg-violet-700" type="submit">
-                            <FilePlus />
-                            Create Issue
-                        </Button>
-                    
+                    <Button className='bg-violet-700' type='submit'>
+                        <Edit />
+                        Save Edit
+                    </Button>
                 </Flex>
             </form>
             <Box>
@@ -102,4 +125,4 @@ const FormIssue = () => {
     );
 };
 
-export default FormIssue;
+export default EditIssueForm;
