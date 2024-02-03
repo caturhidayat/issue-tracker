@@ -20,7 +20,6 @@ const EditIssueDialog = ({ issue }: { issue: IssueType }) => {
         mutationKey: ["updateIssue"],
         mutationFn: async (value: IssueType) => {
             await updateIssue(issue.id ?? 0, value);
-            console.log(value);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["issues"] });

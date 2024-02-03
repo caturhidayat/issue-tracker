@@ -33,6 +33,7 @@ const ListIssues = () => {
     const queryIssue = useQuery({
         queryKey: ["issues"],
         queryFn: getIssues,
+        refetchInterval: 1000,
     });
 
     return (

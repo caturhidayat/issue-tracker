@@ -4,7 +4,6 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Navbar from "./components/Navbar";
-import { QueryClient } from "@tanstack/react-query";
 import { Providers } from "./providers";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -13,8 +12,6 @@ export const metadata: Metadata = {
     title: "Issue Tracker",
     description: "Issue Tracker - NextJS ",
 };
-
-const queryClient = new QueryClient();
 
 export default function RootLayout({
     children,
