@@ -5,7 +5,6 @@ import { deleteIssue, getIssues } from "../actions/issue/action";
 import { IssueType } from "../types/issue";
 import { Info, XCircle } from "lucide-react";
 import toast from "react-hot-toast";
-import EditIssuePopout from "./EditIssueForm";
 import EditIssueDialog from "./EditIssueDialog";
 
 const ListIssues = () => {
@@ -33,6 +32,7 @@ const ListIssues = () => {
     const queryIssue = useQuery({
         queryKey: ["issues"],
         queryFn: getIssues,
+        refetchInterval: 1000,
     });
 
     return (
@@ -93,12 +93,9 @@ const ListIssues = () => {
                                         </Table.Cell>
                                         <Table.Cell>
                                             <Flex align={"baseline"} gap={"4"}>
-                                                <EditIssueDialog issue={issue} />
-                                                {/* <Link
-                                                    href={`/issue/${issue.id}`}
-                                                >
-                                                    Edit
-                                                </Link> */}
+                                                <EditIssueDialog
+                                                    issue={issue}
+                                                />
                                                 <button
                                                     onClick={() => {
                                                         mutation.mutateAsync(
