@@ -1,11 +1,4 @@
-import {
-    Flex,
-    Dialog,
-    Button,
-    TextField,
-    Text,
-    Select,
-} from "@radix-ui/themes";
+import { Flex, Dialog, Button, TextField, Text } from "@radix-ui/themes";
 import { Edit } from "lucide-react";
 import Link from "next/link";
 import { IssueType } from "../types/issue";
@@ -86,20 +79,6 @@ const EditIssueDialog = ({ issue }: { issue: IssueType }) => {
                                 <option value='IN_PROGRESS'>IN_PROGRESS</option>
                                 <option value='DONE'>DONE</option>
                             </select>
-                            {/* <Select.Root
-                                name="status"
-                                defaultValue={formik.values.status}
-                                onValueChange={formik.handleChange}
-                            >
-                                <Select.Trigger variant='soft' />
-                                <Select.Content position='popper'>
-                                    <Select.Item value='OPEN'>OPEN</Select.Item>
-                                    <Select.Item value='IN_PROGRESS'>
-                                        IN_PROGRESS
-                                    </Select.Item>
-                                    <Select.Item value='DONE'>DONE</Select.Item>
-                                </Select.Content>
-                            </Select.Root> */}
                         </Flex>
 
                         <Flex gap='3' mt='4' justify='end'>
@@ -130,20 +109,5 @@ const EditIssueDialog = ({ issue }: { issue: IssueType }) => {
         </Flex>
     );
 };
-
-// function MySelect({ label, ...props }) {
-//     const [field, meta, helpers] = useField(props);
-//     return (
-//       <Select
-//         {...field}
-//         onValueChange={value => helpers.setValue(value)}
-//       >
-//         <Select.Item value="">Select...</Select.Item>
-//         <Select.Item value="option1">Option 1</Select.Item>
-//         <Select.Item value="option2">Option 2</Select.Item>
-//         <Select.Item value="option3">Option 3</Select.Item>
-//       </Select>
-//     );
-//   }
 
 export default EditIssueDialog;

@@ -1,5 +1,5 @@
 "use client";
-import { Button, Text } from "@radix-ui/themes";
+import { Text } from "@radix-ui/themes";
 import Link from "next/link";
 import React from "react";
 import { BsBugFill } from "react-icons/bs";
