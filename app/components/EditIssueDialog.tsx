@@ -1,113 +1,114 @@
-import { Flex, Dialog, Button, TextField, Text } from "@radix-ui/themes";
-import { Edit } from "lucide-react";
+"use client";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { Issue } from "@prisma/client";
+import {
+	Button,
+	Dialog,
+	Flex,
+	Select,
+	Text,
+	TextField,
+} from "@radix-ui/themes";
+import { Edit, FilePlus } from "lucide-react";
 import Link from "next/link";
-import { IssueType } from "../types/issue";
-import { useFormik, useField } from "formik";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { updateIssue } from "../actions/issue/action";
+import { type FormDataInput, IssueData } from "../types/issue";
 
-const EditIssueDialog = ({ issue }: { issue: IssueType }) => {
-    const queryClient = useQueryClient();
+export default function EditIssueDialog({ issue }: { issue: Issue }) {
+	const {
+		register,
+		handleSubmit,
+		formState: { errors, isSubmitting },
+	} = useForm<FormDataInput>({
+		defaultValues: {
+			title: issue.title,
+			description: issue.description,
+			status: issue.status,
+		},
+		resolver: zodResolver(IssueData),
+	});
 
-    const mutation = useMutation({
-        mutationKey: ["updateIssue"],
-        mutationFn: async (value: IssueType) => {
-            await updateIssue(issue.id ?? 0, value);
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["issues"] });
-        },
-    });
+	// Submiting the form
+	const submitForm: SubmitHandler<FormDataInput> = async (formData) => {
+		console.log(formData);
+		// Send the data to the server
+		await updateIssue(issue.localId, formData);
+	};
+	return (
+		<Flex>
+			<Dialog.Root>
+				<Dialog.Trigger>
+					<Edit width={"16"} height={"16"} className="cursor-pointer" />
+				</Dialog.Trigger>
+				<Dialog.Content>
+					<form onSubmit={handleSubmit(submitForm)}>
+						<Flex my={"2"} direction={"column"} gap={"4"}>
+							<label>
+								<Text as="div" size={"2"} weight={"bold"}>
+									Issue Title
+								</Text>
+								<input
+									type="text"
+									{...register("title", { required: true })}
+									placeholder="Enter Title of issue"
+									className="border border-gray-300 rounded-md my-2 p-1 w-full focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+								/>
+								{errors.title && (
+									<Text as="span" size={"2"} color={"red"}>
+										{errors.title.message}
+									</Text>
+								)}
+							</label>
+							<label>
+								<Text as="div" size={"2"} weight={"bold"}>
+									Description
+								</Text>
+								<input
+									type="text"
+									{...register("description", { required: true })}
+									placeholder="Enter Description of issue"
+									className="border border-gray-300 rounded-md my-2 p-1 w-full focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+								/>
+								{errors.description && (
+									<Text as="span" size={"2"} color={"red"}>
+										{errors.description.message}
+									</Text>
+								)}
+							</label>
+							<label>
+								<Text as="div" size={"2"} weight={"bold"}>
+									Status
+								</Text>
+								<select
+									{...register("status", { required: true })}
+									className="border border-gray-300 rounded-md my-2 p-1 w-full focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+								>
+									<option value="OPEN">OPEN</option>
+									<option value="IN_PROGRESS">IN PROGRESS</option>
+									<option value="DONE">DONE</option>
+								</select>
+								{errors.status && (
+									<Text as="span" size={"2"} color={"red"}>
+										{errors.status.message}
+									</Text>
+								)}
+							</label>
 
-    const formik = useFormik({
-        initialValues: {
-            title: issue.title,
-            description: issue.description,
-            status: issue.status,
-        },
-        onSubmit: async (values) => {
-            console.log(values);
-        },
-    });
-    return (
-        <Flex>
-            <form onSubmit={formik.handleSubmit}>
-                <Dialog.Root>
-                    <Dialog.Trigger>
-                        <Link href={"#"}>
-                            <Edit width={"16"} height={"16"} />
-                        </Link>
-                    </Dialog.Trigger>
-
-                    <Dialog.Content style={{ maxWidth: 450 }}>
-                        <Dialog.Title>Edit Issue</Dialog.Title>
-                        <Dialog.Description size='2' mb='4'>
-                            Make changes to your Issue 🪲
-                        </Dialog.Description>
-
-                        <Flex direction='column' gap='3'>
-                            <label>
-                                <Text as='div' size='2' mb='1' weight='bold'>
-                                    Title
-                                </Text>
-                                <TextField.Input
-                                    name='title'
-                                    onChange={formik.handleChange}
-                                    value={formik.values.title}
-                                />
-                            </label>
-                            <label>
-                                <Text as='div' size='2' mb='1' weight='bold'>
-                                    Description
-                                </Text>
-                                <TextField.Input
-                                    name='description'
-                                    onChange={formik.handleChange}
-                                    value={formik.values.description}
-                                />
-                            </label>
-                            <label>
-                                <Text>Status</Text>
-                            </label>
-                            <select
-                                name='status'
-                                value={formik.values.status}
-                                onChange={formik.handleChange}
-                                className='border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent'
-                            >
-                                <option value='OPEN'>OPEN</option>
-                                <option value='IN_PROGRESS'>IN_PROGRESS</option>
-                                <option value='DONE'>DONE</option>
-                            </select>
-                        </Flex>
-
-                        <Flex gap='3' mt='4' justify='end'>
-                            <Dialog.Close>
-                                <Button
-                                    className='bg-violet-200'
-                                    variant='soft'
-                                    color='gray'
-                                >
-                                    Cancel
-                                </Button>
-                            </Dialog.Close>
-                            <Dialog.Close>
-                                <Button
-                                    className='bg-violet-700'
-                                    type='submit'
-                                    onClick={() => {
-                                        mutation.mutate(formik.values);
-                                    }}
-                                >
-                                    Save
-                                </Button>
-                            </Dialog.Close>
-                        </Flex>
-                    </Dialog.Content>
-                </Dialog.Root>
-            </form>
-        </Flex>
-    );
-};
-
-export default EditIssueDialog;
+							<Flex gap={"6"} justify={"end"} align={"center"}>
+								<Button color="violet">
+									<FilePlus width={"16"} height={"16"} />
+									Save
+								</Button>
+								<Dialog.Close>
+									<Button size={"3"} variant="ghost">Cancel</Button>
+								</Dialog.Close>
+							</Flex>
+						</Flex>
+					</form>
+				</Dialog.Content>
+			</Dialog.Root>
+		</Flex>
+	);
+}
