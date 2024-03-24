@@ -13,9 +13,8 @@ const IssuePage = () => {
 			</Box>
 			<Box className="py-4">
 				<Text size={"2"} color="orange" weight={"medium"}>
-					This application database uses AWS, to prevent entering excessive data
-					and causing excessive costs, issue creation is limited
-				</Text>
+				  This is a simple issue tracker app. You can create, update, and delete issues.
+        </Text>
 			</Box>
 			<FormIssue />
 			<ListIssues />
