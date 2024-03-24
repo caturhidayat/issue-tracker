@@ -2,16 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Issue } from "@prisma/client";
-import {
-	Button,
-	Dialog,
-	Flex,
-	Select,
-	Text,
-	TextField,
-} from "@radix-ui/themes";
+import { Button, Dialog, Flex, Text } from "@radix-ui/themes";
 import { Edit, FilePlus } from "lucide-react";
-import Link from "next/link";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { updateIssue } from "../actions/issue/action";
 import { type FormDataInput, IssueData } from "../types/issue";
@@ -20,7 +12,7 @@ export default function EditIssueDialog({ issue }: { issue: Issue }) {
 	const {
 		register,
 		handleSubmit,
-		formState: { errors, isSubmitting },
+		formState: { errors },
 	} = useForm<FormDataInput>({
 		defaultValues: {
 			title: issue.title,
@@ -102,7 +94,9 @@ export default function EditIssueDialog({ issue }: { issue: Issue }) {
 									Save
 								</Button>
 								<Dialog.Close>
-									<Button size={"3"} variant="ghost">Cancel</Button>
+									<Button size={"3"} variant="ghost">
+										Cancel
+									</Button>
 								</Dialog.Close>
 							</Flex>
 						</Flex>
