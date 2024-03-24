@@ -13,7 +13,7 @@ export default async function ListIssues() {
 
 	if (issue.length === 0) {
 		return (
-			<Flex>
+			<Flex className="justify-center gap-4">
 				<Info width={"16"} height={"16"} />
 				<Text size={"2"}>No issue found</Text>
 			</Flex>
