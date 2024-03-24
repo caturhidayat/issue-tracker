@@ -11,6 +11,7 @@ export default async function ListIssues() {
 		},
 	});
 
+
 	if (issue.length === 0) {
 		return (
 			<Flex className="justify-center gap-4">
@@ -19,6 +20,7 @@ export default async function ListIssues() {
 			</Flex>
 		);
 	}
+
 	return (
 		<Flex direction={"column"} gap={"2"}>
 			<Table.Root>
