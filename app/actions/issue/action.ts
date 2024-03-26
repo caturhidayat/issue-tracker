@@ -1,8 +1,9 @@
 "use server";
 
-import type { FormDataInput } from "@/app/types/issue";
+import { type FormDataInput, IssueData } from "@/app/types/issue";
 import prisma from "@/prisma/prisma";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 const getIssues = async () => {
 	const res = await fetch("/api/issue");
@@ -17,16 +18,35 @@ const getIssueById = async (issueId: string) => {
 
 // TODO: CREATE ISSUE
 // * Used in app/components/FormIssue.tsx
-const createIssue = async (formData: FormDataInput) => {
+const createIssue = async (formData: FormData) => {
+	const validateForm = IssueData.safeParse({
+		title: formData.get("title") as string,
+		description: formData.get("description") as string,
+	});
+
+	if (!validateForm.success) {
+		return {
+			error: validateForm.error.flatten().fieldErrors,
+		};
+	}
 	try {
-		const { title, description } = formData;
-		await prisma.issue.create({
+		const title = formData.get("title") as string;
+		const description = formData.get("description") as string;
+		const data = await prisma.issue.create({
 			data: {
 				title,
 				description,
 			},
 		});
+		if(data) {
+			formData.set("title", "");
+			formData.set("description", "");
+		}
 		revalidatePath("/issue");
+		return {
+			ok: true,
+		}
+		// console.log({ 2: data });
 	} catch (error) {
 		throw new Error(String(error));
 	}
