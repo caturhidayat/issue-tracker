@@ -21,6 +21,8 @@ export default async function ListIssues() {
 		);
 	}
 
+	
+
 	return (
 		<Flex direction={"column"} gap={"2"}>
 			<Table.Root>

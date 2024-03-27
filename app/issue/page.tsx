@@ -1,8 +1,10 @@
 import { Box, Text } from "@radix-ui/themes";
+import { revalidatePath } from "next/cache";
 import FormIssue from "../components/FormIssue";
 import ListIssues from "../components/ListIssues";
 
-export default function IssuePage() {
+export default async function IssuePage() {
+	revalidatePath("/issue");
 	return (
 		<div>
 			<Box display={"block"}>
@@ -21,6 +23,4 @@ export default function IssuePage() {
 			<ListIssues />
 		</div>
 	);
-};
-
-
+}
