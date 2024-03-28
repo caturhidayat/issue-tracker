@@ -5,22 +5,26 @@ generator client {
   provider = "prisma-client-js"
 }
 
-
 datasource db {
   provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
-        
+
+// datasource db {
+//   provider  = "postgresql"
+//   url       = env("DATABASE_URL")
+//   directUrl = env("DIRECT_URL")
+// }
 
 model Issue {
-  id String @id @default(uuid())
-  localId Int @unique @default(autoincrement())
-  title String
+  id          String   @id @default(uuid())
+  localId     Int      @unique @default(autoincrement())
+  title       String
   description String
-  status Status @default(OPEN)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  status      Status   @default(OPEN)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@index([localId], name: "localId")
 }
